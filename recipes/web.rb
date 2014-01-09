@@ -93,6 +93,11 @@ execute 'install graphite-web' do
   }
 end
 
+execute 'create secret_key' do
+  # FIXME: HACK: don't use sed? secret key will break with forward slashes and other special chars
+  command "sed -i \"s/SECRET_KEY=''/SECRET_KEY='#{node['graphite']['secret_key']}'/\" '#{node['graphite']['doc_root']}/graphite/app_settings.py'"
+end
+
 directory "#{storagedir}/log/webapp" do
   owner node['graphite']['user_account']
   group node['graphite']['group_account']
